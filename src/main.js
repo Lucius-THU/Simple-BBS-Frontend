@@ -33,16 +33,11 @@ const vue = new Vue({
     methods: {
         init(){
             if(this.$route.path !== '/login'){
-                if(this.$store.state.jwt === ""){
-                    this.$store.commit('initialJwt')
-                }
                 this.axios.get('/api/v1/user', {
                     params: {
                         Authorization: this.$store.state.jwt
                     }
-                  }).then(response => {
-                    console.log(response.data)
-                }).catch(error => {
+                  }).catch(error => {
                     if(error.response.status === 401) this.checkLogin()
                 })
             }

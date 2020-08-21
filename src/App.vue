@@ -21,7 +21,7 @@ html, body {
 }
 
 body {
-    background: url(./assets/background.jpg) no-repeat center / cover;
+    background: url(./assets/background.jpg) no-repeat fixed center / cover;
 }
 
 #app {
@@ -33,6 +33,15 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100%;
+}
+
+.container {
+    position: relative;
+    width: 60%;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 1);
+    margin: 60px auto;
+    word-wrap:break-word;
 }
 
 nav {
