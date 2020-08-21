@@ -2,16 +2,47 @@
     <div class="login">
         <form>
             <h2>登录</h2>
-            <input placeholder="账号">
-            <input type="password" placeholder="密码">
-            <button type="submit">登录</button>
+            <input placeholder="账号" v-model="username">
+            <input type="password" placeholder="密码" v-model="password">
+            <button type="submit" @click.prevent="login">登录</button>
+            <p v-if="seen" key="blank">请完整输入账号与密码！</p>
+            <p v-if="wrong" key="error">账号或密码错误！</p>
         </form>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'Login'
+    name: 'Login',
+    data(){
+        return {
+            username: "",
+            password: "",
+            seen: false,
+            wrong: false
+        }
+    },
+    methods: {
+        login(){
+            if(this.username === "" || this.password === ""){
+                this.wrong = false
+                this.seen = true
+            } else {
+                this.seen = false
+                this.axios.patch('/api/v1/login', {
+                    username: this.username,
+                    password: this.password
+                }).then(response => {
+                    this.$store.commit('setUsername', response.data.username)
+                    this.$store.commit('setNickname', response.data.nickname)
+                    document.cookie = "jwt=" + response.data.jwt + "; max-age=86400";
+                    this.$router.push('/')
+                }).catch(() => {
+                    this.wrong = true
+                })
+            }
+        }
+    }
 }
 </script>
 
@@ -77,6 +108,25 @@ button:hover {
 @keyframes btnAnimation {
     50% {
         background-position: 200%;
+    }
+}
+
+p {
+    font-family: Verdana, Geneva, Tahoma, "Microsoft Yahei", sans-serif;
+    font-size: 16px;
+    color: red;
+    width: 80%;
+    margin: 15px auto;
+    text-align: center;
+    animation: textAnimation 0.5s linear;
+}
+
+@keyframes textAnimation {
+    25% {
+        transform: translateX(-10px);
+    }
+    75% {
+        transform: translateX(10px);
     }
 }
 </style>
