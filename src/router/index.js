@@ -17,6 +17,11 @@ const routes = [
         component: Home
     },
     {
+        path: '/user/:userid/page=:page(\\d+)&size=:size(\\d+)',
+        name: 'UserPosts',
+        component: Home
+    },
+    {
         path: '/about',
         name: 'About',
         component: About
