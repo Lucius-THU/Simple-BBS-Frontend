@@ -25,27 +25,9 @@ Vue.axios.interceptors.request.use(config => {
     return config;
 })
 
-const vue = new Vue({
+new Vue({
     el: '#app',
     router,
     store,
-    render: h => h(App),
-    methods: {
-        init(){
-            if(this.$route.path !== '/login'){
-                this.axios.get('/api/v1/user', {
-                    params: {
-                        Authorization: this.$store.state.jwt
-                    }
-                  }).catch(error => {
-                    if(error.response.status === 401) this.checkLogin()
-                })
-            }
-        },
-        checkLogin(){
-            this.$router.push('/login')
-        }
-    }
+    render: h => h(App)
 })
-
-vue.init()

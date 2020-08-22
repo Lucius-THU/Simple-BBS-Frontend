@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         username: "",
-        nickname: ""
+        nickname: "",
+        total: 1
     },
     mutations: {
         setUsername(state, username){
@@ -14,6 +15,9 @@ export default new Vuex.Store({
         },
         setNickname(state, nickname){
             state.nickname = nickname
+        },
+        setTotalPage(state, total){
+            state.total = total
         }
     },
     actions: {
