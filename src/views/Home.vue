@@ -2,14 +2,14 @@
     <div class="home">
         <div class="container">
             <ul id="post-list">
-                <li v-for="(post, index) in posts" :key="index">
+                <li v-for="(post, index) in posts" :key="index" @click="getPost(post)">
                     <h3>{{ post.title }}</h3>
                     <p :class="{ summary: post.content.length > 1500 }">{{ post.content }}</p>
                     <div class="hide-bar" v-if="post.content.length > 1500"></div>
                     <ul class="info">
-                        <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
+                        <li>作者：<router-link target="_blank" :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
-                        <li>更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
+                        <li>{{ latestTimeTag(post) }}：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(latestTime(post)) }}</li>
                     </ul>
                 </li>
             </ul>
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import NextPage from '@/components/NextPage.vue'
 import PrevPage from '@/components/PrevPage.vue'
 
@@ -80,47 +79,24 @@ export default {
             }).catch(error => {
                 if(error.response.status === 401) this.$router.push('/login')
             })
+        },
+        latestTime(post){
+            return post.updated < post.lastRepliedTime ? post.lastRepliedTime: post.updated
+        },
+        latestTimeTag(post){
+            return post.updated < post.lastRepliedTime ? '最新回帖时间': '更新时间'
+        },
+        getPost(post){
+            const newPage = this.$router.resolve('/post/' + post.id)
+            window.open(newPage.href, '_blank')
         }
     }
 }
 </script>
 
 <style scoped>
-
-#post-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
 #post-list > li {
-    border-bottom: 1px solid purple;
-    font-family: Verdana, Geneva, Tahoma, "Microsoft Yahei", sans-serif;
-    width: 90%;
-    margin: 10px auto;
-    padding: 5px 10px 15px 10px;
-    text-align: left;
-    transition: transform 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    position: relative;
-}
-
-#post-list > li:hover {
-    transform: translateX(10px);
-}
-
-#post-list > li:last-child {
-    border: none;
-    padding-bottom: 25px;
-}
-
-.info > li {
-    font-size: 12px;
-    float: left;
-    padding-right: 28px;
-}
-
-.info > li:first-child {
-    margin-left: -20px;
+    cursor: pointer;
 }
 
 .summary {

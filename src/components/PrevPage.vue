@@ -32,7 +32,7 @@ p {
     height: 100%;
     line-height: 100%;
     text-align: center;
-    font-size: 90px;
+    font-size: 88px;
     color: white;
     user-select: none;
     font-family: "Microsoft Yahei", sans-serif;

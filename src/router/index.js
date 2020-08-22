@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import About from '../views/About.vue'
+import Post from '../views/Post.vue'
 
 Vue.use(VueRouter)
 const routes = [
@@ -17,9 +18,14 @@ const routes = [
         component: Home
     },
     {
-        path: '/user/:userid/page=:page(\\d+)&size=:size(\\d+)',
+        path: '/user/:userid(\\d+)/page=:page(\\d+)&size=:size(\\d+)',
         name: 'UserPosts',
         component: Home
+    },
+    {
+        path: '/post/:postid(\\d+)',
+        name: 'Post',
+        component: Post
     },
     {
         path: '/about',

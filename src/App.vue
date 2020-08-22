@@ -88,8 +88,44 @@ footer > a {
     color: white;
 }
 
-.home, .about, .login{
+#post-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#post-list > li {
+    border-bottom: 1px solid purple;
+    font-family: Verdana, Geneva, Tahoma, "Microsoft Yahei", sans-serif;
+    width: 90%;
+    margin: 10px auto;
+    padding: 5px 10px 15px 10px;
+    text-align: left;
+    transition: transform 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+    position: relative;
+}
+
+#post-list > li:hover {
+    transform: translateX(10px);
+}
+
+#post-list > li:last-child {
+    border: none;
+    padding-bottom: 25px;
+}
+
+.info > li {
+    font-size: 12px;
+    float: left;
+    padding-right: 28px;
+}
+
+.info > li:first-child {
+    margin-left: -20px;
+}
+
+.home, .about, .login, .post{
     flex-grow: 1;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 </style>
