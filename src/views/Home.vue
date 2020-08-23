@@ -2,7 +2,7 @@
     <div class="home">
         <div class="container">
             <ul id="post-list">
-                <li v-for="(post, index) in posts" :key="index" @click="getPost(post)">
+                <li v-for="(post, index) in posts" :key="index" @click="getPost(post, $event)">
                     <h3>{{ post.title }}</h3>
                     <div class="content" :class="{ summary: post.content.length > 1000 }" v-html="post.content"></div>
                     <div class="hide-bar" v-if="post.content.length > 1500"></div>
@@ -47,11 +47,15 @@ export default {
         next()
     },
     beforeRouteLeave (to, from, next) {
-        this.userid = to.params.userid
-        this.page = to.params.page
-        this.size = to.params.size
-        this.refresh()
-        next()
+        if(to.path === '/login'){
+            next()
+        } else {
+            this.userid = to.params.userid
+            this.page = to.params.page
+            this.size = to.params.size
+            this.refresh()
+            next()
+        }
     },
     created(){
         this.refresh()
@@ -90,9 +94,11 @@ export default {
         latestTimeTag(post){
             return post.updated < post.lastRepliedTime ? '最新回帖时间': '更新时间'
         },
-        getPost(post){
-            const newPage = this.$router.resolve('/post/' + post.id)
-            window.open(newPage.href, '_blank')
+        getPost(post, event){
+            if(event.target.tagName !== 'A'){
+                const newPage = this.$router.resolve('/post/' + post.id)
+                window.open(newPage.href, '_blank')
+            }
         }
     }
 }

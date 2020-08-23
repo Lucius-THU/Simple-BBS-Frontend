@@ -8,11 +8,23 @@
             </ul>
         </nav>-->
         <router-view/>
+        <Tool v-if="$route.path !== '/login'"></Tool>
         <footer>
             Copyright &copy; 2020 <a href="mailto:souzou@foxmail.com">Lucius</a> All Rights Reserved.
         </footer>
     </div>
 </template>
+
+<script>
+import Tool from '@/components/Tool.vue'
+
+export default {
+    name: 'App',
+    components: {
+        Tool
+    }
+}
+</script>
 
 <style>
 html, body {
@@ -126,6 +138,19 @@ footer > a {
 
 .content {
     margin: 20px auto;
+}
+
+.circle {
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    border-radius: 50%;
+    cursor: pointer;
+    line-height: 100%;
+    text-align: center;
+    color: white;
+    user-select: none;
+    font-family: "Microsoft Yahei", sans-serif;
 }
 
 .home, .about, .login, .post{
