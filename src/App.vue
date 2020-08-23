@@ -51,37 +51,8 @@ body {
     position: relative;
     width: 60%;
     border-radius: 20px;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: white;
     margin: 60px auto;
-    word-wrap:break-word;
-}
-
-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #f3f3f3;
-    border-bottom: 1px solid #e7e7e7;
-    opacity: 0.5;
-}
-
-nav > ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-nav > ul > li {
-    float: left;
-}
-
-nav > ul > li > a {
-    display: block;
-    color: #666;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
 }
 
 li a:hover {
@@ -153,7 +124,7 @@ footer > a {
     font-family: "Microsoft Yahei", sans-serif;
 }
 
-.home, .about, .login, .post{
+.home, .about, .login, .post, .create{
     flex-grow: 1;
     margin-top: 40px;
 }

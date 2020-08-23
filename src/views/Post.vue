@@ -44,8 +44,7 @@ export default {
                     updated: this.info.updated
                 })
             }).catch(error => {
-                console.log(error)
-                //if(error.response.status === 401) this.$router.push('/login')
+                if(error.response.status === 401) this.$router.push('/login')
             })
         },
         seen(post){

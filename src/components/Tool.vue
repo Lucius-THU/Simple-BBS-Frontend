@@ -2,9 +2,9 @@
     <div class="circle tool">
         <router-link :to="'/user/' + user.id + '/page=1&size=10'">{{ lastname }}</router-link>
         <ul class="show-after-hover">
-            <li id="logout" @click="logout($event)">登出</li>
-            <li>发帖</li>
-            <li><router-link to="/">首页</router-link></li>
+            <li id="logout" @click="logout($event)">登 出</li>
+            <router-link to="/create"><li>发 帖</li></router-link>
+            <router-link to="/"><li>首 页</li></router-link>
         </ul>
     </div>
 </template>
@@ -45,9 +45,9 @@ export default {
     right: 1%;
     background-color: purple;
     transform: translate(-50%, -50%);
-    padding-top: 9px;
-    padding-bottom: 9px;
-    font-size: 22px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 20px;
     box-sizing: border-box;
 }
 
@@ -60,13 +60,13 @@ ul {
     position: fixed;
     bottom: 100%;
     right: 1%;
-    list-style: none;
+    list-style-type: none;
     margin: 0;
     padding: 0;
     transition: display 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-ul > li {
+ul  li {
     margin-bottom: 5px;
     width: 100px;
     height: 30px;
