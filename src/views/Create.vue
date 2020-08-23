@@ -24,12 +24,21 @@ export default {
             content: ""
         }
     },
+    mounted(){
+        if(this.$route.path !== '/create'){
+            this.axios.get('/api/v1/post/' + this.$route.params.postid).then(response => {
+                this.title = response.data.title
+                this.content = response.data.content
+            })
+        }
+    },
     methods: {
         preview(){
 
         },
         submit(){
-            this.axios.post('/api/v1/post', {
+            if(this.$route.path === '/create'){
+                this.axios.post('/api/v1/post', {
                     title: this.title,
                     content: this.content
                 }).then(response => {
@@ -37,6 +46,16 @@ export default {
                 }).catch(error => {
                     if(error.response.status === 401) this.$router.push('/login')
                 })
+            } else {
+                this.axios.put('/api/v1/post/' + this.$route.params.postid, {
+                    title: this.title,
+                    content: this.content
+                }).then(() => {
+                    this.$router.replace('/post/' + this.$route.params.postid)
+                }).catch(error => {
+                    if(error.response.status === 401) this.$router.push('/login')
+                })
+            }
         }
     }
 }

@@ -7,8 +7,7 @@ import Post from '../views/Post.vue'
 import Create from '../views/Create.vue'
 
 Vue.use(VueRouter)
-const routes = [
-    {
+const routes = [{
         path: '/page=:page(\\d+)&size=:size(\\d+)',
         name: 'Page',
         component: Home
@@ -41,6 +40,11 @@ const routes = [
     {
         path: '/create',
         name: 'Create',
+        component: Create
+    },
+    {
+        path: '/post/:postid(\\d+)/edit',
+        name: 'Edit',
         component: Create
     }
 ]

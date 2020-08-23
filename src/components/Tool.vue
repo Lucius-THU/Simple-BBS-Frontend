@@ -22,6 +22,8 @@ export default {
         this.axios.get('/api/v1/user').then(response => {
             this.user = response.data
             this.lastname = response.data.nickname[0]
+            this.$store.commit('setUserId', response.data.id)
+            this.$store.commit('setNickname', response.data.nickname)
         })
     },
     methods: {

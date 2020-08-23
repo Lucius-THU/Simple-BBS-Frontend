@@ -2,6 +2,7 @@
     <div class="post">
         <div class="container">
             <h2>{{ info.title }}</h2>
+            <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">修改</router-link>
             <ul id="post-list">
                 <li v-for="(post, index) in info.reply" :key="index">
                     <div class="blockquote" v-if="post.replyId !== undefined && post.replyId !== 0" v-html="find(info.reply, post.replyId)"></div>
@@ -56,6 +57,9 @@ export default {
                     return replys[i].nickname + ' 在第 ' + i + ' 层中说：<br>' + replys[i].content
                 }
             }
+        },
+        check(userid){
+            return userid === this.$store.state.userid
         }
     }
 }
@@ -76,5 +80,15 @@ h2 {
     padding-left: 16px;
     border-left: 4px solid rgb(99, 81, 182);
     font-size: 14px;
+}
+
+.container > a {
+    color: #959595;
+    font-size: 12px;
+    text-decoration-line: underline;
+}
+
+.container > a:hover {
+    background-color: #ddd;
 }
 </style>

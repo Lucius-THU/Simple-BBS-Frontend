@@ -5,7 +5,7 @@
                 <li v-for="(post, index) in posts" :key="index" @click="getPost(post, $event)">
                     <h3>{{ post.title }}</h3>
                     <div class="content" :class="{ summary: post.content.length > 1000 }" v-html="post.content"></div>
-                    <div class="hide-bar" v-if="post.content.length > 1500"></div>
+                    <div class="hide-bar" v-if="post.content.length > 1000"></div>
                     <ul class="info">
                         <li>作者：<router-link target="_blank" :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
