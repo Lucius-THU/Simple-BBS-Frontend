@@ -4,12 +4,12 @@
             <ul id="post-list">
                 <li v-for="(post, index) in posts" :key="index" @click="getPost(post)">
                     <h3>{{ post.title }}</h3>
-                    <p :class="{ summary: post.content.length > 1500 }">{{ post.content }}</p>
+                    <div class="content" :class="{ summary: post.content.length > 1000 }" v-html="post.content"></div>
                     <div class="hide-bar" v-if="post.content.length > 1500"></div>
                     <ul class="info">
                         <li>作者：<router-link target="_blank" :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
-                        <li>{{ latestTimeTag(post) }}：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(latestTime(post)) }}</li>
+                        <li v-if="seen(post)">{{ latestTimeTag(post) }}：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(latestTime(post)) }}</li>
                     </ul>
                 </li>
             </ul>
@@ -67,7 +67,8 @@ export default {
                 params: {
                     page: this.page,
                     size: this.size,
-                    userId: this.userid === undefined ? 0: this.userid
+                    userId: this.userid === undefined ? 0: this.userid,
+                    orderByReply: true
                 }
             }).then(response => {
                 this.$store.commit('setTotalPage', parseInt((response.data.total + response.data.size - 1) / response.data.size))
@@ -79,6 +80,9 @@ export default {
             }).catch(error => {
                 if(error.response.status === 401) this.$router.push('/login')
             })
+        },
+        seen(post){
+            return post.lastRepliedTime !== post.created
         },
         latestTime(post){
             return post.updated < post.lastRepliedTime ? post.lastRepliedTime: post.updated
@@ -100,7 +104,7 @@ export default {
 }
 
 .summary {
-    height: 350px;
+    height: 225px;
     overflow: hidden;
     text-overflow: clip;
 }
@@ -109,7 +113,7 @@ export default {
     position: absolute;
     width: 98%;
     height: 100px;
-    bottom: 28px;
+    bottom: 23px;
     background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 70%);
 }
 

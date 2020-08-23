@@ -124,6 +124,10 @@ footer > a {
     margin-left: -20px;
 }
 
+.content {
+    margin: 20px auto;
+}
+
 .home, .about, .login, .post{
     flex-grow: 1;
     margin-top: 40px;

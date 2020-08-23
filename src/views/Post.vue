@@ -4,8 +4,8 @@
             <h2>{{ info.title }}</h2>
             <ul id="post-list">
                 <li v-for="(post, index) in info.reply" :key="index">
-                    <p class="blockquote" v-if="post.replyId !== 0">{{ find(info.reply, post.replyId) }}</p>
-                    <p>{{ post.content }}</p>
+                    <div class="blockquote" v-if="post.replyId !== undefined && post.replyId !== 0" v-html="find(info.reply, post.replyId)"></div>
+                    <div class="content" v-html="post.content"></div>
                     <ul class="info">
                         <li>第{{ index }}层</li>
                         <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
@@ -49,12 +49,12 @@ export default {
             })
         },
         seen(post){
-            return post.updated != post.created
+            return post.updated !== post.created
         },
         find(replys, replyId){
-            for(let i = 0, len = replys.length; i < len; i++){
+            for(let i = 1, len = replys.length; i < len; i++){
                 if(replys[i].id === replyId){
-                    return replys[i].nickname + ' 在第 ' + i + ' 层中说：' + replys[i].content
+                    return replys[i].nickname + ' 在第 ' + i + ' 层中说：<br>' + replys[i].content
                 }
             }
         }
