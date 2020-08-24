@@ -7,7 +7,7 @@
                 <li id="login"><router-link to="/login">登录</router-link></li>
             </ul>
         </nav>-->
-        <router-view/>
+        <router-view v-if="isRouterAlive"/>
         <Tool v-if="$route.path !== '/login'"></Tool>
         <footer>
             Copyright &copy; 2020 <a href="mailto:souzou@foxmail.com">Lucius</a> All Rights Reserved.
@@ -22,6 +22,24 @@ export default {
     name: 'App',
     components: {
         Tool
+    },
+    data(){
+        return{
+            isRouterAlive: true
+        }
+    },
+    provide(){
+        return{
+            reload:this.reload
+        }
+    },
+    methods: {
+        reload (){
+            this.isRouterAlive = false
+            this.$nextTick(function(){
+                this.isRouterAlive = true
+            })
+        }
     }
 }
 </script>
@@ -55,7 +73,7 @@ body {
     margin: 60px auto;
 }
 
-li a:hover {
+li > a:hover {
     background-color: #ddd;
 }
 

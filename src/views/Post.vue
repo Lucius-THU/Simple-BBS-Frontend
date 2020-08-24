@@ -2,7 +2,7 @@
     <div class="post">
         <div class="container">
             <h2>{{ info.title }}</h2>
-            <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">修改</router-link>
+            <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">编辑</router-link>
             <ul id="post-list">
                 <li v-for="(post, index) in info.reply" :key="index">
                     <div class="blockquote" v-if="post.replyId !== undefined && post.replyId !== 0" v-html="find(info.reply, post.replyId)"></div>
@@ -12,21 +12,32 @@
                         <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
                         <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
+                        <li v-if="check(post.userId) && index"><span class="a" @click="edit(index)">编辑</span></li>
                     </ul>
+                    <transition name="fade"><Reply v-if="seenEdit[index]" :reply="undefined" @reload="reload" :preContent="post.content" :postid="info.id" :settedReplyId="post.id"></Reply></transition>
                 </li>
             </ul>
+        </div>
+        <div class="container">
+            <Reply :reply="info.reply" @reload="reload" content=""></Reply>
         </div>
     </div>
 </template>
 
 <script>
+import Reply from '@/components/Reply.vue'
 
 export default {
     name: 'Post',
+    components: {
+        Reply
+    },
+    inject: ['reload'],
     data(){
         return {
             postid: this.$route.params.postid,
-            info: {}
+            info: {},
+            seenEdit: []
         }
     },
     created(){
@@ -44,6 +55,8 @@ export default {
                     created: this.info.created,
                     updated: this.info.updated
                 })
+                this.seenEdit.length = this.info.reply.length
+                this.seenEdit.fill(false)
             }).catch(error => {
                 if(error.response.status === 401) this.$router.push('/login')
             })
@@ -60,6 +73,9 @@ export default {
         },
         check(userid){
             return userid === this.$store.state.userid
+        },
+        edit(index){
+            this.$set(this.seenEdit, index, !this.seenEdit[index])
         }
     }
 }
@@ -90,5 +106,21 @@ h2 {
 
 .container > a:hover {
     background-color: #ddd;
+}
+
+.a {
+    text-decoration-line: underline;
+    cursor: pointer;
+}
+
+.a:hover {
+    background-color: #ddd;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .3s linear;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
 }
 </style>

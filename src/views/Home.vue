@@ -39,14 +39,14 @@ export default {
             size: this.$route.params.size
         }
     },
-    beforeRouteUpdate (to, from, next) {
+    beforeRouteUpdate(to, from, next) {
         this.userid = to.params.userid
         this.page = to.params.page
         this.size = to.params.size
         this.refresh()
         next()
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
         if(to.path === '/login'){
             next()
         } else {
