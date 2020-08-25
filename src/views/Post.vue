@@ -6,13 +6,13 @@
             <ul id="post-list">
                 <li v-for="(post, index) in info.reply" :key="index">
                     <div class="blockquote" v-if="post.replyId !== undefined && post.replyId !== 0" v-html="find(info.reply, post.replyId)"></div>
-                    <div class="content" v-html="post.content"></div>
+                    <div class="content" v-html="display(post.content)"></div>
                     <ul class="info">
                         <li>第{{ index }}层</li>
                         <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
                         <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
-                        <li v-if="check(post.userId) && index"><span class="a" @click="edit(index)">编辑</span></li>
+                        <li v-if="check(post.userId) && index"><span class="a" @click="edit(index)">{{ seenEdit[index] ? '收起编辑': '编辑' }}</span></li>
                     </ul>
                     <transition name="fade"><Reply v-if="seenEdit[index]" :reply="undefined" @reload="reload" :preContent="post.content" :postid="info.id" :settedReplyId="post.id"></Reply></transition>
                 </li>
@@ -26,6 +26,16 @@
 
 <script>
 import Reply from '@/components/Reply.vue'
+import marked from 'marked'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/googlecode.css'
+
+marked.setOptions({
+    breaks: true,
+    highlight: function(code) {
+        return hljs.highlightAuto(code).value;
+    }
+})
 
 export default {
     name: 'Post',
@@ -76,16 +86,15 @@ export default {
         },
         edit(index){
             this.$set(this.seenEdit, index, !this.seenEdit[index])
+        },
+        display(content){
+            return '<div class="setSize">' + marked(content) + '</div>'
         }
     }
 }
 </script>
 
 <style scoped>
-a {
-    color: black;
-}
-
 h2 {
     padding-top: 20px;
 }

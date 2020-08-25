@@ -73,8 +73,12 @@ body {
     margin: 60px auto;
 }
 
-li > a:hover {
+.info a:hover {
     background-color: #ddd;
+}
+
+.info a {
+    color: black;
 }
 
 footer {
@@ -145,5 +149,21 @@ footer > a {
 .home, .about, .login, .post, .create{
     flex-grow: 1;
     margin-top: 40px;
+}
+
+.setSize img, .setSize iframe, .setSize video {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.setSize code, .setSize pre{
+    font-family: Consolas;
+}
+
+.setSize pre{
+    margin-bottom: 15px;
+    padding-left: 16px;
+    border-left: 4px solid rgb(99, 81, 182);
+    font-size: 14px;
 }
 </style>

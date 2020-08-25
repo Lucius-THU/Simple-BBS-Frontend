@@ -6,24 +6,36 @@
                 <button type="submit" @click.prevent="submit">发布</button>
                 <button type="button" @click.prevent="preview">预览</button>
             </div>
-            <textarea id="area" v-model="content"></textarea>
+            <div v-show="!show" v-html="display(content)"></div>
+            <textarea v-show="show" id="area" v-model="content"></textarea>
         </form>
     </div>
 </template>
 
 <script>
+import marked from 'marked'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/googlecode.css'
+
+marked.setOptions({
+    breaks: true,
+    highlight: function(code) {
+        return hljs.highlightAuto(code).value;
+    }
+})
 export default {
     name: 'Reply',
     props: ['reply', 'preContent', 'postid','settedReplyId'],
     data(){
         return {
             replyid: 0,
-            content: this.preContent
+            content: this.preContent ? this.preContent: "",
+            show: true
         }
     },
     methods: {
         preview(){
-
+            this.show = !this.show
         },
         submit(){
             if(this.reply !== undefined){
@@ -44,6 +56,9 @@ export default {
                     if(error.response.status === 401) this.$router.push('/login')
                 })
             }
+        },
+        display(content){
+            return '<div class="setSize">' + marked(content) + '</div>'
         }
     }
 }
@@ -54,6 +69,8 @@ form {
     width: 90%;
     margin: 10px auto;
     font-family: Helvetica, 'Microsoft Yahei', sans-serif;
+    text-align: left;
+    padding-bottom: 15px;
 }
 
 .row {
@@ -105,6 +122,5 @@ textarea {
     font-family: Helvetica, 'Microsoft Yahei', sans-serif;
     resize: none;
     padding: 5px;
-    margin-bottom: 15px;
 }
 </style>

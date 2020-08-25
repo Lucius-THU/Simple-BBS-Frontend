@@ -4,7 +4,7 @@
             <ul id="post-list">
                 <li v-for="(post, index) in posts" :key="index" @click="getPost(post, $event)">
                     <h3>{{ post.title }}</h3>
-                    <div class="content" :class="{ summary: post.content.length > 1000 }" v-html="post.content"></div>
+                    <div class="content" :class="{ summary: post.content.length > 1000 }" v-html="display(post.content)"></div>
                     <div class="hide-bar" v-if="post.content.length > 1000"></div>
                     <ul class="info">
                         <li>作者：<router-link target="_blank" :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
@@ -22,6 +22,16 @@
 <script>
 import NextPage from '@/components/NextPage.vue'
 import PrevPage from '@/components/PrevPage.vue'
+import marked from 'marked'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/googlecode.css'
+
+marked.setOptions({
+    breaks: true,
+    highlight: function(code) {
+        return hljs.highlightAuto(code).value;
+    }
+})
 
 export default {
     name: 'Home',
@@ -99,6 +109,9 @@ export default {
                 const newPage = this.$router.resolve('/post/' + post.id)
                 window.open(newPage.href, '_blank')
             }
+        },
+        display(content){
+            return '<div class="setSize">' + marked(content) + '</div>'
         }
     }
 }
@@ -121,9 +134,5 @@ export default {
     height: 100px;
     bottom: 23px;
     background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 70%);
-}
-
-a {
-    color: black;
 }
 </style>
