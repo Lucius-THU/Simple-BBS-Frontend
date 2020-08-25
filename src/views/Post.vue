@@ -13,13 +13,15 @@
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
                         <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
                         <li v-if="check(post.userId) && index"><span class="a" @click="edit(index)">{{ seenEdit[index] ? '收起编辑': '编辑' }}</span></li>
+                        <li v-if="index"><span class="a" @click="replyit(index)">{{ seenReply[index] ? '收起回复': '回复' }}</span></li>
                     </ul>
-                    <transition name="fade"><Reply v-if="seenEdit[index]" :reply="undefined" @reload="reload" :preContent="post.content" :postid="info.id" :settedReplyId="post.id"></Reply></transition>
+                    <transition name="fade"><Reply v-if="seenEdit[index]" @reload="reload" :preContent="post.content" :postid="info.id" :settedReplyId="post.id" :isEdit="true"></Reply></transition>
+                    <transition name="fade"><Reply v-if="seenReply[index]" @reload="reload" preContent="" :postid="info.id" :settedReplyId="post.id" :isEdit="false"></Reply></transition>
                 </li>
             </ul>
         </div>
         <div class="container">
-            <Reply :reply="info.reply" @reload="reload" content=""></Reply>
+            <Reply @reload="reload" preContent="" :isEdit="false" :postid="info.id" :settedReplyId="0"></Reply>
         </div>
     </div>
 </template>
@@ -47,7 +49,8 @@ export default {
         return {
             postid: this.$route.params.postid,
             info: {},
-            seenEdit: []
+            seenEdit: [],
+            seenReply: []
         }
     },
     created(){
@@ -67,6 +70,8 @@ export default {
                 })
                 this.seenEdit.length = this.info.reply.length
                 this.seenEdit.fill(false)
+                this.seenReply.length = this.info.reply.length
+                this.seenReply.fill(false)
             }).catch(error => {
                 if(error.response.status === 401) this.$router.push('/login')
             })
@@ -86,6 +91,9 @@ export default {
         },
         edit(index){
             this.$set(this.seenEdit, index, !this.seenEdit[index])
+        },
+        replyit(index){
+            this.$set(this.seenReply, index, !this.seenReply[index])
         },
         display(content){
             return '<div class="setSize">' + marked(content) + '</div>'

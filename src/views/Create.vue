@@ -5,6 +5,7 @@
                 <div class="row">
                     <label>标题</label>
                     <input v-model="title">
+                    <a href="https://www.markdown.xyz/basic-syntax/" target="_blank">Markdown 基本语法</a>
                     <button type="button" @click.prevent="preview">预览</button>
                     <button type="submit" @click.prevent="submit">发布</button>
                 </div>
@@ -134,5 +135,9 @@ textarea {
     font-family: Helvetica, 'Microsoft Yahei', sans-serif;
     resize: none;
     padding: 5px;
+}
+
+.row a {
+    margin: auto 15px;
 }
 </style>

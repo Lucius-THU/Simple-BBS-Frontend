@@ -2,7 +2,7 @@
     <div class="reply">
         <form>
             <div class="row">
-                <label v-if="reply !== undefined">回复第<input v-model="replyid">层</label>
+                <a href="https://www.markdown.xyz/basic-syntax/" target="_blank">Markdown 基本语法</a>
                 <button type="submit" @click.prevent="submit">发布</button>
                 <button type="button" @click.prevent="preview">预览</button>
             </div>
@@ -25,11 +25,10 @@ marked.setOptions({
 })
 export default {
     name: 'Reply',
-    props: ['reply', 'preContent', 'postid','settedReplyId'],
+    props: ['preContent', 'postid','settedReplyId', 'isEdit'],
     data(){
         return {
-            replyid: 0,
-            content: this.preContent ? this.preContent: "",
+            content: this.preContent,
             show: true
         }
     },
@@ -38,10 +37,10 @@ export default {
             this.show = !this.show
         },
         submit(){
-            if(this.reply !== undefined){
+            if(!this.isEdit){
                 this.axios.post('/api/v1/post/' + this.postid + '/reply', {
                     content: this.content,
-                    replyId: this.replyid ? this.reply[this.replyid].id: 0
+                    replyId: this.settedReplyId
                 }).then(() => {
                     this.$emit('reload');
                 }).catch(error => {
@@ -74,25 +73,9 @@ form {
 }
 
 .row {
-    margin: 25px auto;
+    margin: 30px auto;
     padding: 15px 5px 10px 5px;
-}
-
-label {
-    color: #898989;
-    padding-right: 16px;
-    margin: auto 0;
-    float: left;
-}
-
-.row input {
-    flex-grow: 1;
-    border: 0;
-    outline: none;
-    border-bottom: 1px solid rgba(130, 63, 156, 0.829);
-    font-size: 16px;
-    width: 50px;
-    text-align: center;
+    margin-bottom: 10px;
 }
 
 button {
@@ -122,5 +105,9 @@ textarea {
     font-family: Helvetica, 'Microsoft Yahei', sans-serif;
     resize: none;
     padding: 5px;
+}
+
+.row a {
+    margin: auto 0;
 }
 </style>
