@@ -13,7 +13,7 @@
         <transition name="fade"><Reply v-if="seenReply" @reload="reload" preContent="" :postid="mainId" :settedReplyId="post.id" :isEdit="false"></Reply></transition>
         <div v-if="checkReply(displayInfo)" class="sub-reply">
             <ul class="sub-ul">
-                <li v-for="(post, index) in displayInfo" :key="index">
+                <li v-for="(post, index) in displayInfo" :key="index" class="reply-style">
                     <div class="content" v-html="display(find(post.replyId) + post.content)"></div>
                     <ul class="info">
                         <li>第{{ index + 1 }}层</li>
@@ -131,8 +131,7 @@ export default {
 }
 
 .sub-reply {
-    margin-left: 50px;
-    border-top: 1px solid pink;
+    margin-left: 30px;
     margin-bottom: 10px;
     font-size: 14px;
 }
@@ -140,5 +139,9 @@ export default {
 .sub-ul {
     list-style-type: none;
     font-size: 0.95em;
+}
+
+.reply-style {
+    border-top: 1px solid pink;
 }
 </style>
