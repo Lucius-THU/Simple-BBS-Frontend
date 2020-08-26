@@ -116,7 +116,10 @@ footer > a {
 
 #post-list > li:last-child {
     border: none;
-    padding-bottom: 25px;
+}
+
+.info {
+    margin-bottom: 50px;
 }
 
 .info > li {
@@ -165,5 +168,21 @@ footer > a {
     padding-left: 16px;
     border-left: 4px solid rgb(99, 81, 182);
     font-size: 14px;
+}
+
+.more {
+    margin: 10px auto;
+    padding-bottom: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.a {
+    text-decoration-line: underline;
+    cursor: pointer;
+}
+
+.a:hover {
+    background-color: #ddd;
 }
 </style>

@@ -4,21 +4,9 @@
             <h2>{{ info.title }}</h2>
             <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">编辑</router-link>
             <ul id="post-list">
-                <li v-for="(post, index) in info.reply" :key="index">
-                    <div class="blockquote" v-if="post.replyId !== undefined && post.replyId !== 0" v-html="find(info.reply, post.replyId)"></div>
-                    <div class="content" v-html="display(post.content)"></div>
-                    <ul class="info">
-                        <li>第{{ index }}层</li>
-                        <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
-                        <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
-                        <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
-                        <li v-if="check(post.userId) && index"><span class="a" @click="edit(index)">{{ seenEdit[index] ? '收起编辑': '编辑' }}</span></li>
-                        <li v-if="index"><span class="a" @click="replyit(index)">{{ seenReply[index] ? '收起回复': '回复' }}</span></li>
-                    </ul>
-                    <transition name="fade"><Reply v-if="seenEdit[index]" @reload="reload" :preContent="post.content" :postid="info.id" :settedReplyId="post.id" :isEdit="true"></Reply></transition>
-                    <transition name="fade"><Reply v-if="seenReply[index]" @reload="reload" preContent="" :postid="info.id" :settedReplyId="post.id" :isEdit="false"></Reply></transition>
-                </li>
+                <PostItem v-for="(post, index) in displayInfo" :key="index" :post="post" :index="index" :mainId="info.id"></PostItem>
             </ul>
+            <div class="more" v-if="startIndex + 10 < cnt"><span class="a" @click="more">加载更多</span></div>
         </div>
         <div class="container">
             <Reply @reload="reload" preContent="" :isEdit="false" :postid="info.id" :settedReplyId="0"></Reply>
@@ -28,6 +16,7 @@
 
 <script>
 import Reply from '@/components/Reply.vue'
+import PostItem from '@/components/PostItem.vue'
 import marked from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/googlecode.css'
@@ -42,15 +31,19 @@ marked.setOptions({
 export default {
     name: 'Post',
     components: {
-        Reply
+        Reply,
+        PostItem
     },
     inject: ['reload'],
     data(){
         return {
             postid: this.$route.params.postid,
             info: {},
-            seenEdit: [],
-            seenReply: []
+            formatInfo: [],
+            displayInfo: [],
+            startIndex: 0,
+            cnt: 0,
+            map: {}
         }
     },
     created(){
@@ -68,35 +61,41 @@ export default {
                     created: this.info.created,
                     updated: this.info.updated
                 })
-                this.seenEdit.length = this.info.reply.length
-                this.seenEdit.fill(false)
-                this.seenReply.length = this.info.reply.length
-                this.seenReply.fill(false)
-            }).catch(error => {
-                if(error.response.status === 401) this.$router.push('/login')
-            })
-        },
-        seen(post){
-            return post.updated !== post.created
-        },
-        find(replys, replyId){
-            for(let i = 1, len = replys.length; i < len; i++){
-                if(replys[i].id === replyId){
-                    return replys[i].nickname + ' 在第 ' + i + ' 层中说：<br>' + replys[i].content
+                this.formatInfo[this.cnt++] = this.info.reply[0]
+                for(let i = 1, len = this.info.reply.length; i < len; i++){
+                    if(this.info.reply[i].replyId){
+                        this.map[this.info.reply[i].id] = this.map[this.info.reply[i].replyId]
+                        if(this.formatInfo[this.map[this.info.reply[i].replyId]].reply === undefined){
+                            this.formatInfo[this.map[this.info.reply[i].replyId]].reply = []
+                        }
+                        this.formatInfo[this.map[this.info.reply[i].replyId]].reply.push(this.info.reply[i])
+                    } else {
+                        this.formatInfo[this.map[this.info.reply[i].id] = this.cnt++] = this.info.reply[i]
+                    }
                 }
-            }
+                if(this.cnt <= 10){
+                    this.displayInfo = this.formatInfo
+                } else {
+                    for(let i = 0; i < 10; i++){
+                        this.displayInfo.push(this.formatInfo[i])
+                    }
+                }
+            })
         },
         check(userid){
             return userid === this.$store.state.userid
         },
-        edit(index){
-            this.$set(this.seenEdit, index, !this.seenEdit[index])
-        },
-        replyit(index){
-            this.$set(this.seenReply, index, !this.seenReply[index])
-        },
-        display(content){
-            return '<div class="setSize">' + marked(content) + '</div>'
+        more(){
+            this.startIndex += 10
+            if(this.cnt <= this.startIndex + 10){
+                for(let i = this.startIndex; i < this.cnt; i++){
+                    this.displayInfo.push(this.formatInfo[i])
+                }
+            } else {
+                for(let i = this.startIndex; i < this.startIndex + 10; i++){
+                    this.displayInfo.push(this.formatInfo[i])
+                }
+            }
         }
     }
 }
@@ -107,14 +106,6 @@ h2 {
     padding-top: 20px;
 }
 
-.blockquote {
-    color: #959595;
-    margin-bottom: 15px;
-    padding-left: 16px;
-    border-left: 4px solid rgb(99, 81, 182);
-    font-size: 14px;
-}
-
 .container > a {
     color: #959595;
     font-size: 12px;
@@ -123,21 +114,5 @@ h2 {
 
 .container > a:hover {
     background-color: #ddd;
-}
-
-.a {
-    text-decoration-line: underline;
-    cursor: pointer;
-}
-
-.a:hover {
-    background-color: #ddd;
-}
-
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .3s linear;
-}
-.fade-enter, .fade-leave-to {
-    opacity: 0;
 }
 </style>

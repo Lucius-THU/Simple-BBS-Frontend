@@ -132,7 +132,7 @@ export default {
     position: absolute;
     width: 98%;
     height: 100px;
-    bottom: 23px;
+    bottom: 60px;
     background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 70%);
 }
 </style>
