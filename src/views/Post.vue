@@ -17,16 +17,6 @@
 <script>
 import Reply from '@/components/Reply.vue'
 import PostItem from '@/components/PostItem.vue'
-import marked from 'marked'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/googlecode.css'
-
-marked.setOptions({
-    breaks: true,
-    highlight: function(code) {
-        return hljs.highlightAuto(code).value;
-    }
-})
 
 export default {
     name: 'Post',

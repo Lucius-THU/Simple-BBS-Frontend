@@ -1,12 +1,5 @@
 <template>
     <div id="app">
-        <!--<nav>
-            <ul>
-                <li><router-link to="/">首页</router-link></li>
-                <li><router-link to="/about">关于</router-link></li>
-                <li id="login"><router-link to="/login">登录</router-link></li>
-            </ul>
-        </nav>-->
         <router-view v-if="isRouterAlive"/>
         <Tool v-if="$route.path !== '/login'"></Tool>
         <footer>

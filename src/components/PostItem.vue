@@ -44,6 +44,7 @@ marked.setOptions({
         return hljs.highlightAuto(code).value;
     }
 })
+
 export default {
     name: 'PostItem',
     props: ['post', 'index', 'mainId'],
