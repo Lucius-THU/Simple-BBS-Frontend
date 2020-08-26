@@ -7,7 +7,7 @@
                     <input v-model="title">
                     <a href="https://www.markdown.xyz/basic-syntax/" target="_blank">Markdown 基本语法</a>
                     <Emotion @emo="add"></Emotion>
-                    <button type="button" @click.prevent="preview">预览</button>
+                    <button type="button" @click.prevent="preview">{{ show ? '预览' : '编辑'}}</button>
                     <button type="submit" @click.prevent="submit">发布</button>
                 </div>
                 <div v-if="!show" v-html="display(content)"></div>

@@ -1,12 +1,10 @@
 import DOMPurify from 'dompurify'
-import marked from 'marked-katex'
-import katex from 'katex'
+import marked from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/googlecode.css'
 
 marked.setOptions({
     breaks: true,
-    kaTex: katex,
     highlight: function(code) {
         return hljs.highlightAuto(code).value;
     }

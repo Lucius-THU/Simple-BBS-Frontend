@@ -4,7 +4,7 @@
             <div class="row">
                 <a href="https://www.markdown.xyz/basic-syntax/" target="_blank">Markdown 基本语法</a>
                 <button type="submit" @click.prevent="submit">发布</button>
-                <button type="button" @click.prevent="preview">预览</button>
+                <button type="button" @click.prevent="preview">{{ show ? '预览' : '编辑'}}</button>
                 <Emotion @emo="add"></Emotion>
             </div>
             <div v-show="!show" v-html="display(content)"></div>

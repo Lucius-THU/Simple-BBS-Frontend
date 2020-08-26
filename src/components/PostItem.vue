@@ -28,7 +28,7 @@
                 </li>
             </ul>
         </div>
-        <div class="more" v-if="startIndex + 10 < cnt"><span class="a" @click="more">加载更多</span></div>
+        <div class="more" v-if="startIndex + step < cnt"><span class="a" @click="more">加载更多</span></div>
     </li>
 </template>
 
@@ -51,7 +51,8 @@ export default {
             seenEdits: [],
             seenReplys: [],
             startIndex: 0,
-            cnt: 0
+            cnt: 0,
+            step: 5
         }
     },
     created(){
@@ -61,10 +62,10 @@ export default {
             this.seenEdits.fill(false)
             this.seenReplys.length = this.cnt
             this.seenReplys.fill(false)
-            if(this.cnt <= 10){
+            if(this.cnt <= this.step){
                     this.displayInfo = this.post.reply
             } else {
-                for(let i = 0; i < 10; i++){
+                for(let i = 0; i < this.step; i++){
                     this.displayInfo.push(this.post.reply[i])
                 }
             }
@@ -98,13 +99,13 @@ export default {
             return ""
         },
         more(){
-            this.startIndex += 10
-            if(this.cnt <= this.startIndex + 10){
+            this.startIndex += this.step
+            if(this.cnt <= this.startIndex + this.step){
                 for(let i = this.startIndex; i < this.cnt; i++){
                     this.displayInfo.push(this.post.reply[i])
                 }
             } else {
-                for(let i = this.startIndex; i < this.startIndex + 10; i++){
+                for(let i = this.startIndex; i < this.startIndex + this.step; i++){
                     this.displayInfo.push(this.post.reply[i])
                 }
             }

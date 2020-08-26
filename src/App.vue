@@ -165,7 +165,7 @@ footer > a {
 
 .more {
     margin: 10px auto;
-    padding-bottom: 8px;
+    padding: 8px 0;
     text-align: center;
     font-size: 14px;
 }

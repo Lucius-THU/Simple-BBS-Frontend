@@ -4,10 +4,12 @@
             <h2>{{ info.title }}</h2>
             <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">编辑</router-link>
             <ul id="post-list">
-                <PostItem v-for="(post, index) in displayInfo" :key="index" :post="post" :index="index" :mainId="info.id"></PostItem>
+                <PostItem v-for="(post, index) in displayInfo" :key="index + startIndex" :post="post" :index="index + startIndex + 1" :mainId="info.id"></PostItem>
             </ul>
-            <div class="more" v-if="startIndex + 10 < cnt"><span class="a" @click="more">加载更多</span></div>
+            <ToPage :now="now" :total="total" @to="Pageto"></ToPage>
         </div>
+        <NextPage v-if="nextSeen" @click.native="Pageto(1)"></NextPage>
+        <PrevPage v-if="prevSeen" @click.native="Pageto(-1)"></PrevPage>
         <div class="container">
             <Reply @reload="reload" preContent="" :isEdit="false" :postid="info.id" :settedReplyId="0"></Reply>
         </div>
@@ -17,12 +19,18 @@
 <script>
 import Reply from '@/components/Reply.vue'
 import PostItem from '@/components/PostItem.vue'
+import NextPage from '@/components/NextPage.vue'
+import PrevPage from '@/components/PrevPage.vue'
+import ToPage from '@/components/ToPage.vue'
 
 export default {
     name: 'Post',
     components: {
         Reply,
-        PostItem
+        PostItem,
+        NextPage,
+        PrevPage,
+        ToPage
     },
     inject: ['reload'],
     data(){
@@ -33,6 +41,11 @@ export default {
             displayInfo: [],
             startIndex: 0,
             cnt: 0,
+            step: 10,
+            total: 1,
+            now: 1,
+            nextSeen: false,
+            prevSeen: false,
             map: {}
         }
     },
@@ -40,6 +53,24 @@ export default {
         this.getContent()
     },
     methods: {
+        Pageto(num){
+            this.now += num
+            if(this.now > 1) this.prevSeen = true
+            else this.prevSeen = false
+            if(this.now < this.total) this.nextSeen = true
+            else this.nextSeen = false
+            this.startIndex += num * this.step
+            this.displayInfo = []
+            if(this.cnt <= this.startIndex + this.step){
+                for(let i = this.startIndex; i < this.cnt; i++){
+                    this.displayInfo.push(this.formatInfo[i])
+                }
+            } else {
+                for(let i = this.startIndex; i < this.startIndex + this.step; i++){
+                    this.displayInfo.push(this.formatInfo[i])
+                }
+            }
+        },
         getContent(){
             this.axios.get('/api/v1/post/' + this.postid).then(response => {
                 this.info = response.data
@@ -63,29 +94,19 @@ export default {
                         this.formatInfo[this.map[this.info.reply[i].id] = this.cnt++] = this.info.reply[i]
                     }
                 }
+                this.total = parseInt((this.cnt + this.step - 1) / this.step)
                 if(this.cnt <= 10){
                     this.displayInfo = this.formatInfo
                 } else {
                     for(let i = 0; i < 10; i++){
                         this.displayInfo.push(this.formatInfo[i])
                     }
+                    this.nextSeen = true
                 }
             })
         },
         check(userid){
             return userid === this.$store.state.userid
-        },
-        more(){
-            this.startIndex += 10
-            if(this.cnt <= this.startIndex + 10){
-                for(let i = this.startIndex; i < this.cnt; i++){
-                    this.displayInfo.push(this.formatInfo[i])
-                }
-            } else {
-                for(let i = this.startIndex; i < this.startIndex + 10; i++){
-                    this.displayInfo.push(this.formatInfo[i])
-                }
-            }
         }
     }
 }
@@ -104,5 +125,9 @@ h2 {
 
 .container > a:hover {
     background-color: #ddd;
+}
+
+.to-page {
+    margin: 10px auto;
 }
 </style>
