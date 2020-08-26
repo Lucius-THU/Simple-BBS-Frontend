@@ -35,7 +35,7 @@ export default {
                 }).then(response => {
                     this.$store.commit('setUserId', response.data.id)
                     this.$store.commit('setNickname', response.data.nickname)
-                    document.cookie = "jwt=" + response.data.jwt + "; max-age=86400";
+                    document.cookie = "jwt=" + response.data.jwt + "; max-age=86400; SameSite=Strict";
                     this.$router.push('/page=1&size=10')
                 }).catch(() => {
                     this.wrong = true

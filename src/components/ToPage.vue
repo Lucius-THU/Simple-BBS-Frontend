@@ -13,7 +13,7 @@ export default {
         total: Number
     },
     mounted(){
-        this.to()
+        if(this.now < 1 || this.now > this.total) this.to()
     },
     methods: {
         to(){

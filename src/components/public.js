@@ -1,13 +1,21 @@
 import DOMPurify from 'dompurify'
-import marked from 'marked'
-import hljs from 'highlight.js'
+import showdown from 'showdown'
+import showdownHighlight from 'showdown-highlight'
+import showdownKatex from 'showdown-katex'
 import 'highlight.js/styles/googlecode.css'
 
-marked.setOptions({
-    breaks: true,
-    highlight: function(code) {
-        return hljs.highlightAuto(code).value;
-    }
+const converter = new showdown.Converter({
+    extensions: [
+        showdownHighlight,
+        showdownKatex({
+            throwOnError: false,
+            displayMode: true,
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: '$', right: '$', display: false },
+              ],
+          }),
+    ]
 })
 
 function emotion(res){
@@ -29,6 +37,6 @@ function emotion(res){
 
 
 export default function analyzeEmotion(content){
-    const s = marked(content).replace(/\[[\u4E00-\u9FA5]{1,4}\];/g, emotion)
+    const s = converter.makeHtml(content).replace(/\[[\u4E00-\u9FA5]{1,4}\];/g, emotion)
     return DOMPurify.sanitize(s)
 }
