@@ -16,19 +16,22 @@
         </div>
         <NextPage v-if="nextSeen" @click.native="Pageto(1)"></NextPage>
         <PrevPage v-if="prevSeen" @click.native="Pageto(-1)"></PrevPage>
+        <ToPage :now="page === undefined ? 1: Number(page)" :total="$store.state.total" @to="Pageto"></ToPage>
     </div>
 </template>
 
 <script>
 import NextPage from '@/components/NextPage.vue'
 import PrevPage from '@/components/PrevPage.vue'
+import ToPage from '@/components/ToPage.vue'
 import analyzeEmotion from '@/components/public.js'
 
 export default {
     name: 'Home',
     components: {
         NextPage,
-        PrevPage
+        PrevPage,
+        ToPage
     },
     data(){
         return {
