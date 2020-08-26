@@ -149,7 +149,7 @@ footer > a {
 
 .setSize img, .setSize iframe, .setSize video {
     max-width: 100%;
-    max-height: 100%;
+    max-height: 800px;
 }
 
 .setSize code, .setSize pre{

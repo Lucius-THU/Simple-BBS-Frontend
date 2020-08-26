@@ -22,6 +22,7 @@
 <script>
 import NextPage from '@/components/NextPage.vue'
 import PrevPage from '@/components/PrevPage.vue'
+import analyzeEmotion from '@/components/public.js'
 import marked from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/googlecode.css'
@@ -111,32 +112,7 @@ export default {
             }
         },
         display(content){
-            return '<div class="setSize">' + this.analyzeEmotion(marked(content)) + '</div>'
-        },
-        analyzeEmotion(content){
-            const pattern = /\[[\u4e00-\u9fa5]+\];/g
-            const pattern2 = /\[[\u4e00-\u9fa5]+\];/
-            let s = content
-            const matches = content.match(pattern)
-            const list = [
-                '呵呵', '哈哈', '吐舌', '啊', '酷', '怒', '开心', '汗', '泪', '黑线',
-                '鄙视', '不高兴', '真棒', '钱', '疑问', '阴险', '吐', '咦', '委屈', '花心',
-                '呼', '笑眼', '冷', '太开心', '滑稽', '勉强', '狂汗', '乖', '睡觉', '惊哭',
-                '生气', '惊讶', '喷', '爱心', '心碎', '玫瑰', '礼物', '彩虹', '星星月亮', '太阳',
-                '钱币', '灯泡', '茶杯', '蛋糕', '音乐', '爱你', '胜利', '大拇指', '弱', '好的'
-            ]
-            if(matches){
-                for(let i = 0, len = matches.length; i < len; i++){
-                    for(let j = 0, len2 = list.length; j < len2; j++){
-                        if('[' + list[j] + '];' === matches[i]){
-                            const url = require('../assets/emotion/' + j + '.png')
-                            s = s.replace(pattern2, '<img src="' + url + '">')
-                            break;
-                        }
-                    }
-                }
-            }
-            return s
+            return '<div class="setSize">' + analyzeEmotion(marked(content)) + '</div>'
         }
     }
 }
