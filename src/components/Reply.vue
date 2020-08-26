@@ -16,7 +16,6 @@
 <script>
 import Emotion from '@/components/Emotion.vue'
 import analyzeEmotion from '@/components/public.js'
-import marked from 'marked'
 
 export default {
     name: 'Reply',
@@ -55,7 +54,7 @@ export default {
             }
         },
         display(content){
-            return '<div class="setSize">' + analyzeEmotion(marked(content)) + '</div>'
+            return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         },
         add(item){
             if(!this.show) return;

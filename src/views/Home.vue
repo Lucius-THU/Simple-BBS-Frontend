@@ -23,16 +23,6 @@
 import NextPage from '@/components/NextPage.vue'
 import PrevPage from '@/components/PrevPage.vue'
 import analyzeEmotion from '@/components/public.js'
-import marked from 'marked'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/googlecode.css'
-
-marked.setOptions({
-    breaks: true,
-    highlight: function(code) {
-        return hljs.highlightAuto(code).value;
-    }
-})
 
 export default {
     name: 'Home',
@@ -112,7 +102,7 @@ export default {
             }
         },
         display(content){
-            return '<div class="setSize">' + analyzeEmotion(marked(content)) + '</div>'
+            return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         }
     }
 }

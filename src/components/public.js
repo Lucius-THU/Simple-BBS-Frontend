@@ -1,4 +1,16 @@
 import DOMPurify from 'dompurify'
+import marked from 'marked-katex'
+import katex from 'katex'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/googlecode.css'
+
+marked.setOptions({
+    breaks: true,
+    kaTex: katex,
+    highlight: function(code) {
+        return hljs.highlightAuto(code).value;
+    }
+})
 
 function emotion(res){
     let word = res.replace(/\[|\]|;/g, '')
@@ -19,6 +31,6 @@ function emotion(res){
 
 
 export default function analyzeEmotion(content){
-    const s = content.replace(/\[[\u4E00-\u9FA5]{1,4}\];/g, emotion)
+    const s = marked(content).replace(/\[[\u4E00-\u9FA5]{1,4}\];/g, emotion)
     return DOMPurify.sanitize(s)
 }

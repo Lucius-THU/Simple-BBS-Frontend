@@ -35,7 +35,6 @@
 <script>
 import Reply from '@/components/Reply.vue'
 import analyzeEmotion from '@/components/public.js'
-import marked from 'marked'
 
 export default {
     name: 'PostItem',
@@ -73,7 +72,7 @@ export default {
     },
     methods: {
         display(content){
-            return '<div class="setSize">' + analyzeEmotion(marked(content)) + '</div>'
+            return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         },
         seen(post){
             return post.updated !== post.created
