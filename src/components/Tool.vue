@@ -68,7 +68,7 @@ ul {
     transition: display 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-ul  li {
+ul li {
     margin-bottom: 5px;
     width: 100px;
     height: 30px;
