@@ -143,7 +143,7 @@ footer > a {
     font-family: "Microsoft Yahei", sans-serif;
 }
 
-.home, .about, .login, .post, .create, .favorites{
+.home, .login, .post, .create, .favorites{
     flex-grow: 1;
     margin-top: 40px;
 }

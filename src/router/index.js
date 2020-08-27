@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import About from '../views/About.vue'
 import Post from '../views/Post.vue'
 import Create from '../views/Create.vue'
 import Favorites from '../views/Favorites.vue'
@@ -27,11 +26,6 @@ const routes = [{
         path: '/post/:postid(\\d+)',
         name: 'Post',
         component: Post
-    },
-    {
-        path: '/about',
-        name: 'About',
-        component: About
     },
     {
         path: '/login',
