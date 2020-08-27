@@ -2,7 +2,7 @@
     <div class="favorites">
         <div class="container">
             <ul id="post-list">
-                <li v-for="(post, index) in posts" :key="index" @click="getPost(post, $event)">
+                <li v-for="post in posts" :key="post.id" @click="getPost(post, $event)">
                     <h3>{{ post.title }}</h3>
                     <div class="content" :class="{ summary: post.content.length > 1000 }" v-html="display(post.content)"></div>
                     <div class="hide-bar" v-if="post.content.length > 1000"></div>
@@ -46,7 +46,11 @@ export default {
     beforeRouteUpdate(to, from, next) {
         this.page = to.params.page
         this.size = to.params.size
-        this.refresh()
+        if(to.name === 'Favorites'){
+            this.refresh(localStorage.posts)
+        } else {
+            this.refresh(localStorage.history)
+        }
         next()
     },
     beforeRouteLeave(to, from, next) {
@@ -55,24 +59,37 @@ export default {
         } else {
             this.page = to.params.page
             this.size = to.params.size
-            this.refresh()
+            if(to.name === 'Favorites'){
+                this.refresh(localStorage.posts)
+            } else {
+                this.refresh(localStorage.history)
+            }
             next()
         }
     },
     created(){
-        document.title = '收藏 - 清软论坛'
-        this.refresh()
+        if(this.$route.path.indexOf('history') === -1){
+            document.title = '收藏 - 清软论坛'
+            this.refresh(localStorage.posts)
+        } else {
+            document.title = '浏览记录 - 清软论坛'
+            this.refresh(localStorage.history)
+        }
     },
     methods: {
         Pageto(t){
-            this.$router.push('/favorites/page=' + (Number(this.page) + t) + '&size=' + this.size)
+            if(this.$route.path.indexOf('history') === -1){
+                this.$router.push('/favorites/page=' + (Number(this.page) + t) + '&size=' + this.size)
+            } else {
+                this.$router.push('/history/page=' + (Number(this.page) + t) + '&size=' + this.size)
+            }
         },
-        refresh(){
-            if(localStorage.posts === undefined || localStorage.posts === ''){
+        async refresh(s){
+            if(s === undefined || s === ''){
                 this.total = 1
                 this.page = 1
             } else {
-                this.total =  parseInt((localStorage.posts.match(/;/g).length + Number(this.size) - 1) / this.size)
+                this.total =  parseInt((s.match(/;/g).length + Number(this.size) - 1) / this.size)
                 if(this.page > this.total){
                     this.page = this.total
                 } else if(this.page < 1){
@@ -85,10 +102,10 @@ export default {
                     this.prevSeen = true
                 } else this.prevSeen = false
                 this.posts = []
-                const matches = localStorage.posts.match(/\[\d+\];/g)
+                const matches = s.match(/\[\d+\];/g)
                 for(let i = (this.page - 1) * this.size, len = Math.min(matches.length, this.page * this.size); i < len; i++){
                     let word = matches[i].replace(/\[|\]|;/g, '')
-                    this.axios.get('/api/v1/post/' + word).then(response => {
+                    await this.axios.get('/api/v1/post/' + word).then(response => {
                         const info = {}
                         info.id = response.data.id
                         info.userId = response.data.userId

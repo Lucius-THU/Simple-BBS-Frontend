@@ -52,6 +52,11 @@ const routes = [{
         path: '/favorites/page=:page(\\d+)&size=:size(\\d+)',
         name: 'Favorites',
         component: Favorites
+    },
+    {
+        path: '/history/page=:page(\\d+)&size=:size(\\d+)',
+        name: 'History',
+        component: Favorites
     }
 ]
 

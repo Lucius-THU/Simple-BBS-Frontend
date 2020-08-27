@@ -129,6 +129,17 @@ export default {
                     }
                     this.nextSeen = true
                 }
+                const history = localStorage.history;
+                if(history !== undefined && history.indexOf('[' + this.info.id + '];') !== -1){
+                    localStorage.history = history.replace('[' + this.info.id + '];', '')
+                }
+                if(localStorage.history === undefined){
+                    localStorage.history = '[' + this.info.id + '];'
+                } else {
+                    localStorage.history = '[' + this.info.id + '];' + localStorage.history
+                }
+            }).catch(error => {
+                if(error.response.status === 401) this.$router.push('/login')
             })
         },
         check(userid){
@@ -146,7 +157,7 @@ export default {
                     localStorage.posts = '[' + this.info.id + '];'
                 } else {
                     localStorage.posts = '[' + this.info.id + '];' + localStorage.posts
-                }                
+                }
             }
             this.favorite = !this.favorite
         }
