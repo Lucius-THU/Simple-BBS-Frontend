@@ -10,8 +10,9 @@ const converter = new showdown.Converter({
         showdownKatex({
             throwOnError: false,
             displayMode: true,
+            strict: 'ignore',
             delimiters: [
-                { left: "$$", right: "$$", display: true },
+                { left: '$$', right: '$$', display: true },
                 { left: '$', right: '$', display: false },
               ],
           }),
