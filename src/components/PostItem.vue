@@ -94,7 +94,7 @@ export default {
         find(replyId){
             for(let i = 0, len = this.post.reply.length; i < len; i++){
                 if(this.post.reply[i].id === replyId){
-                    return '&gt; 回复 ' + this.post.reply[i].nickname + ' 在第 ' + (i + 1) + ' 层的帖子\n\n'
+                    return '&gt; 回复 ' + this.post.reply[i].nickname + ' 在 ' + (i + 1) + ' 楼的帖子\n\n'
                 }
             }
             return ""

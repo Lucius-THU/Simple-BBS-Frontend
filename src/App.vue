@@ -60,7 +60,7 @@ body {
 
 .container {
     position: relative;
-    width: 65%;
+    width: 68%;
     border-radius: 20px;
     background-color: white;
     margin: 60px auto;
