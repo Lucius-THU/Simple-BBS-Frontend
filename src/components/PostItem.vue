@@ -1,8 +1,8 @@
 <template>
     <li>
-        <div class="content" v-html="display(post.content)"></div>
+        <div class="content" v-html="display(post.content)"  @click="showImg"></div>
         <ul class="info">
-            <li>第{{ index }}层</li>
+            <li>{{ index }}楼</li>
             <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
             <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
             <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
@@ -14,9 +14,9 @@
         <div v-if="checkReply(displayInfo)" class="sub-reply">
             <ul class="sub-ul">
                 <li v-for="(post, index) in displayInfo" :key="index" class="reply-style">
-                    <div class="content" v-html="display(find(post.replyId) + post.content)"></div>
+                    <div class="content" v-html="display(find(post.replyId) + post.content)"  @click="showImg"></div>
                     <ul class="info">
-                        <li>第{{ index + 1 }}层</li>
+                        <li>{{ index + 1 }}楼</li>
                         <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
                         <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
                         <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
@@ -52,7 +52,8 @@ export default {
             seenReplys: [],
             startIndex: 0,
             cnt: 0,
-            step: 5
+            step: 5,
+            pos: undefined
         }
     },
     created(){
@@ -107,6 +108,21 @@ export default {
             } else {
                 for(let i = this.startIndex; i < this.startIndex + this.step; i++){
                     this.displayInfo.push(this.post.reply[i])
+                }
+            }
+        },
+        showImg(e){
+            if(e){
+                if(e.target.tagName === 'IMG'){
+                    if(e.target.height !== e.target.naturalHeight || e.target.className === 'big'){
+                        if(e.target.className === 'big'){
+                            e.target.className = ''
+                            document.documentElement.scrollTop = this.pos
+                        } else {
+                            e.target.className = 'big'
+                            this.pos = document.documentElement.scrollTop || document.body.scrollTop;
+                        }
+                    }
                 }
             }
         }

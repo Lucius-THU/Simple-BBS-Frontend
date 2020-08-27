@@ -152,6 +152,10 @@ footer > a {
     max-height: 800px;
 }
 
+.setSize .big {
+    max-height: none;
+}
+
 .setSize code, .setSize pre{
     font-family: Consolas;
 }

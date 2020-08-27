@@ -2,9 +2,11 @@
     <div class="post">
         <div class="container">
             <h2>{{ info.title }}</h2>
+            <span class="a" @click="owner = !owner">{{ !owner ? '只看楼主': '取消只看楼主' }}</span>
             <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">编辑</router-link>
+            <span class="a">收藏</span>
             <ul id="post-list">
-                <PostItem v-for="(post, index) in displayInfo" :key="index + startIndex" :post="post" :index="index + startIndex + 1" :mainId="info.id"></PostItem>
+                <PostItem v-for="post in displayInfo" :key="post.index" :post="post" :index="post.index" :mainId="info.id"></PostItem>
             </ul>
             <ToPage :now="now" :total="total" @to="Pageto"></ToPage>
         </div>
@@ -38,6 +40,7 @@ export default {
             postid: this.$route.params.postid,
             info: {},
             formatInfo: [],
+            selInfo: [],
             displayInfo: [],
             startIndex: 0,
             cnt: 0,
@@ -46,11 +49,26 @@ export default {
             now: 1,
             nextSeen: false,
             prevSeen: false,
-            map: {}
+            map: {},
+            owner: false
         }
     },
     created(){
         this.getContent()
+    },
+    watch: {
+        owner(newOwner){
+            if(!newOwner){
+                this.selInfo = this.formatInfo
+            } else {
+                this.selInfo = []
+                for(let i = 0; i < this.cnt; i++){
+                    if(this.formatInfo[i].userId === this.info.userId) this.selInfo.push(this.formatInfo[i])
+                }
+            }
+            this.total = parseInt((this.selInfo.length + this.step - 1) / this.step)
+            this.Pageto(this.now - 1)
+        }
     },
     methods: {
         Pageto(num){
@@ -61,13 +79,13 @@ export default {
             else this.nextSeen = false
             this.startIndex += num * this.step
             this.displayInfo = []
-            if(this.cnt <= this.startIndex + this.step){
-                for(let i = this.startIndex; i < this.cnt; i++){
-                    this.displayInfo.push(this.formatInfo[i])
+            if(this.selInfo.length <= this.startIndex + this.step){
+                for(let i = this.startIndex, len = this.selInfo.length; i < len; i++){
+                    this.displayInfo.push(this.selInfo[i])
                 }
             } else {
-                for(let i = this.startIndex; i < this.startIndex + this.step; i++){
-                    this.displayInfo.push(this.formatInfo[i])
+                for(let i = this.startIndex, len = this.startIndex + this.step; i < len; i++){
+                    this.displayInfo.push(this.selInfo[i])
                 }
             }
         },
@@ -80,7 +98,7 @@ export default {
                     nickname: this.info.nickname,
                     content: this.info.content,
                     created: this.info.created,
-                    updated: this.info.updated
+                    updated: this.info.updated,
                 })
                 this.formatInfo[this.cnt++] = this.info.reply[0]
                 for(let i = 1, len = this.info.reply.length; i < len; i++){
@@ -94,12 +112,14 @@ export default {
                         this.formatInfo[this.map[this.info.reply[i].id] = this.cnt++] = this.info.reply[i]
                     }
                 }
-                this.total = parseInt((this.cnt + this.step - 1) / this.step)
-                if(this.cnt <= 10){
-                    this.displayInfo = this.formatInfo
+                for(let i = 0; i < this.cnt; i++) this.formatInfo[i].index = i + 1
+                this.selInfo = this.formatInfo;
+                this.total = parseInt((this.selInfo.length + this.step - 1) / this.step)
+                if(this.selInfo.length <= 10){
+                    this.displayInfo = this.selInfo
                 } else {
                     for(let i = 0; i < 10; i++){
-                        this.displayInfo.push(this.formatInfo[i])
+                        this.displayInfo.push(this.selInfo[i])
                     }
                     this.nextSeen = true
                 }
@@ -121,6 +141,13 @@ h2 {
     color: #959595;
     font-size: 12px;
     text-decoration-line: underline;
+}
+
+.container > span {
+    color: #959595;
+    font-size: 12px;
+    text-decoration-line: underline;
+    margin: 0 5px;
 }
 
 .container > a:hover {
