@@ -8,7 +8,6 @@ export default new Vuex.Store({
         userid: 0,
         nickname: "",
         total: 1,
-        now: 1
     },
     mutations: {
         setUserId(state, userid){

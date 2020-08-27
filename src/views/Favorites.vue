@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div class="favorites">
         <div class="container">
             <ul id="post-list">
                 <li v-for="(post, index) in posts" :key="index" @click="getPost(post, $event)">
@@ -16,7 +16,7 @@
         </div>
         <NextPage v-if="nextSeen" @click.native="Pageto(1)"></NextPage>
         <PrevPage v-if="prevSeen" @click.native="Pageto(-1)"></PrevPage>
-        <ToPage :now="page === undefined ? 1: Number(page)" :total="$store.state.total" @to="Pageto"></ToPage>
+        <ToPage :now="Number(page)" :total="Number(total)" @to="Pageto"></ToPage>
     </div>
 </template>
 
@@ -27,7 +27,7 @@ import ToPage from '@/components/ToPage.vue'
 import analyzeEmotion from '@/components/public.js'
 
 export default {
-    name: 'Home',
+    name: 'Favorites',
     components: {
         NextPage,
         PrevPage,
@@ -38,13 +38,12 @@ export default {
             posts: [],
             nextSeen: false,
             prevSeen: false,
-            userid: this.$route.params.userid,
             page: this.$route.params.page,
-            size: this.$route.params.size
+            size: this.$route.params.size,
+            total: 1
         }
     },
     beforeRouteUpdate(to, from, next) {
-        this.userid = to.params.userid
         this.page = to.params.page
         this.size = to.params.size
         this.refresh()
@@ -54,7 +53,6 @@ export default {
         if(to.path === '/login'){
             next()
         } else {
-            this.userid = to.params.userid
             this.page = to.params.page
             this.size = to.params.size
             this.refresh()
@@ -62,33 +60,50 @@ export default {
         }
     },
     created(){
-        document.title = '清软论坛'
+        document.title = '收藏 - 清软论坛'
         this.refresh()
-        if(this.$route.path === '/') this.$router.push('/page=1&size=10')
     },
     methods: {
         Pageto(t){
-            if(this.$route.path.indexOf('user') === -1) this.$router.push('/page=' + (Number(this.page) + t) + '&size=' + this.size)
-            else this.$router.push('/user/' + this.userid + '/page=' + (Number(this.page) + t) + '&size=' + this.size)
+            this.$router.push('/favorites/page=' + (Number(this.page) + t) + '&size=' + this.size)
         },
         refresh(){
-            this.axios.get('/api/v1/post', {
-                params: {
-                    page: this.page,
-                    size: this.size,
-                    userId: this.userid === undefined ? 0: this.userid,
-                    orderByReply: true
+            if(localStorage.posts === undefined || localStorage.posts === ''){
+                this.total = 1
+                this.page = 1
+            } else {
+                this.total =  parseInt((localStorage.posts.match(/;/g).length + Number(this.size) - 1) / this.size)
+                if(this.page > this.total){
+                    this.page = this.total
+                } else if(this.page < 1){
+                    this.page = 1
                 }
-            }).then(response => {
-                this.$store.commit('setTotalPage', parseInt((response.data.total + response.data.size - 1) / response.data.size))
-                this.posts = response.data.posts
-                this.page = response.data.page
-                this.size = response.data.size
-                this.nextSeen = this.page < this.$store.state.total
-                this.prevSeen = this.page > 1
-            }).catch(error => {
-                if(error.response.status === 401) this.$router.push('/login')
-            })
+                if(this.page < this.total){
+                    this.nextSeen = true
+                } else this.nextSeen = false
+                if(this.page > 1){
+                    this.prevSeen = true
+                } else this.prevSeen = false
+                this.posts = []
+                const matches = localStorage.posts.match(/\[\d+\];/g)
+                for(let i = (this.page - 1) * this.size, len = Math.min(matches.length, this.page * this.size); i < len; i++){
+                    let word = matches[i].replace(/\[|\]|;/g, '')
+                    this.axios.get('/api/v1/post/' + word).then(response => {
+                        const info = {}
+                        info.id = response.data.id
+                        info.userId = response.data.userId
+                        info.nickname = response.data.nickname
+                        info.title = response.data.title
+                        info.content = response.data.content
+                        info.created = response.data.created
+                        info.updated = response.data.updated
+                        info.lastRepliedTime = response.data.lastRepliedTime
+                        this.posts.push(info)
+                    }).catch(error => {
+                        if(error.response.status === 401) this.$router.push('/login')
+                    })
+                }
+            }
         },
         seen(post){
             return post.lastRepliedTime !== post.created
