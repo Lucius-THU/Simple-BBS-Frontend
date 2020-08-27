@@ -12,9 +12,6 @@ export default {
         now: Number,
         total: Number
     },
-    mounted(){
-        if(this.now < 1 || this.now > this.total) this.to()
-    },
     methods: {
         to(){
             let value = this.$refs.input.value;

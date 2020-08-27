@@ -62,6 +62,7 @@ export default {
         }
     },
     created(){
+        document.title = '清软论坛'
         this.refresh()
         if(this.$route.path === '/') this.$router.push('/page=1&size=10')
     },

@@ -34,6 +34,7 @@ export default {
         }
     },
     mounted(){
+        document.title = '发帖 - 清软论坛'
         if(this.$route.path !== '/create'){
             this.axios.get('/api/v1/post/' + this.$route.params.postid).then(response => {
                 this.title = response.data.title

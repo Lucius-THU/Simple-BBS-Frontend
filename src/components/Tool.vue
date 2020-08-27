@@ -4,6 +4,7 @@
         <ul class="show-after-hover">
             <li id="logout" @click="logout($event)">登 出</li>
             <router-link to="/create"><li>发 帖</li></router-link>
+            <router-link to="/favorites/page=1&size=10"><li>收 藏</li></router-link>
             <router-link to="/"><li>首 页</li></router-link>
         </ul>
     </div>

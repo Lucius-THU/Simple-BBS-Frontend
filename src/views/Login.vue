@@ -22,6 +22,9 @@ export default {
             wrong: false
         }
     },
+    created(){
+        document.title = '登录 - 清软论坛'
+    },
     methods: {
         login(){
             if(this.username === "" || this.password === ""){

@@ -4,7 +4,7 @@
             <h2>{{ info.title }}</h2>
             <span class="a" @click="owner = !owner">{{ !owner ? '只看楼主': '取消只看楼主' }}</span>
             <router-link v-if="check(info.userId)" :to="'/post/' + info.id + '/edit'">编辑</router-link>
-            <span class="a">收藏</span>
+            <span class="a" @click="favoriteChange">{{ favorite ? '取消收藏': '收藏' }}</span>
             <ul id="post-list">
                 <PostItem v-for="post in displayInfo" :key="post.index" :post="post" :index="post.index" :mainId="info.id"></PostItem>
             </ul>
@@ -50,11 +50,15 @@ export default {
             nextSeen: false,
             prevSeen: false,
             map: {},
-            owner: false
+            owner: false,
+            favorite: false
         }
     },
     created(){
         this.getContent()
+    },
+    computed: {
+        
     },
     watch: {
         owner(newOwner){
@@ -92,6 +96,8 @@ export default {
         getContent(){
             this.axios.get('/api/v1/post/' + this.postid).then(response => {
                 this.info = response.data
+                this.favorite = this.isfavorite()
+                if(this.info.title !== '' && this.info.title !== undefined) document.title = this.info.title + ' - 清软论坛'
                 this.info.reply.unshift({
                     id: this.info.id,
                     userId: this.info.userId,
@@ -115,10 +121,10 @@ export default {
                 for(let i = 0; i < this.cnt; i++) this.formatInfo[i].index = i + 1
                 this.selInfo = this.formatInfo;
                 this.total = parseInt((this.selInfo.length + this.step - 1) / this.step)
-                if(this.selInfo.length <= 10){
+                if(this.selInfo.length <= this.step){
                     this.displayInfo = this.selInfo
                 } else {
-                    for(let i = 0; i < 10; i++){
+                    for(let i = 0; i < this.step; i++){
                         this.displayInfo.push(this.selInfo[i])
                     }
                     this.nextSeen = true
@@ -127,6 +133,22 @@ export default {
         },
         check(userid){
             return userid === this.$store.state.userid
+        },
+        isfavorite(){
+            const posts = localStorage.posts;
+            return posts !== undefined &&  posts.indexOf('[' + this.info.id + '];') !== -1
+        },
+        favoriteChange(){
+            if(this.favorite){
+                localStorage.posts = localStorage.posts.replace('[' + this.info.id + '];', '')
+            } else {
+                if(localStorage.posts === undefined){
+                    localStorage.posts = '[' + this.info.id + '];'
+                } else {
+                    localStorage.posts = '[' + this.info.id + '];' + localStorage.posts
+                }                
+            }
+            this.favorite = !this.favorite
         }
     }
 }
