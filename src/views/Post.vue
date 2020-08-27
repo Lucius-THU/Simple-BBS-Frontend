@@ -54,11 +54,9 @@ export default {
             favorite: false
         }
     },
-    created(){
-        this.getContent()
-    },
-    computed: {
-        
+    async created(){
+        await this.getContent()
+        if(sessionStorage.postid !== undefined) this.Pageto(sessionStorage.postid - this.now)
     },
     watch: {
         owner(newOwner){
@@ -77,24 +75,19 @@ export default {
     methods: {
         Pageto(num){
             this.now += num
+            sessionStorage.postid = this.now
             if(this.now > 1) this.prevSeen = true
             else this.prevSeen = false
             if(this.now < this.total) this.nextSeen = true
             else this.nextSeen = false
             this.startIndex += num * this.step
             this.displayInfo = []
-            if(this.selInfo.length <= this.startIndex + this.step){
-                for(let i = this.startIndex, len = this.selInfo.length; i < len; i++){
-                    this.displayInfo.push(this.selInfo[i])
-                }
-            } else {
-                for(let i = this.startIndex, len = this.startIndex + this.step; i < len; i++){
-                    this.displayInfo.push(this.selInfo[i])
-                }
+            for(let i = this.startIndex, len = Math.min(this.selInfo.length, this.startIndex + this.step); i < len; i++){
+                this.displayInfo.push(this.selInfo[i])
             }
         },
-        getContent(){
-            this.axios.get('/api/v1/post/' + this.postid).then(response => {
+        async getContent(){
+            await this.axios.get('/api/v1/post/' + this.postid).then(response => {
                 this.info = response.data
                 this.favorite = this.isfavorite()
                 if(this.info.title !== '' && this.info.title !== undefined) document.title = this.info.title + ' - 清软论坛'
