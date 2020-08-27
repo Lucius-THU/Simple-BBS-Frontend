@@ -71,7 +71,7 @@ export default {
                 }
             }
             this.total = parseInt((this.selInfo.length + this.step - 1) / this.step)
-            this.Pageto(this.now - 1)
+            this.Pageto(1 - this.now)
         }
     },
     methods: {

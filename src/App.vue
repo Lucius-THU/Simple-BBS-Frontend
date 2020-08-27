@@ -60,7 +60,7 @@ body {
 
 .container {
     position: relative;
-    width: 60%;
+    width: 65%;
     border-radius: 20px;
     background-color: white;
     margin: 60px auto;
@@ -127,6 +127,7 @@ footer > a {
 
 .content {
     margin: 20px auto;
+    word-wrap: break-word;
 }
 
 .circle {
