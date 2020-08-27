@@ -6,6 +6,7 @@
                 <button type="submit" @click.prevent="submit">发布</button>
                 <button type="button" @click.prevent="preview">{{ show ? '预览' : '编辑'}}</button>
                 <Emotion @emo="add"></Emotion>
+                <p v-if="blank" class="error">好像什么都没有写的样子！</p>
             </div>
             <div v-show="!show" v-html="display(content)"></div>
             <textarea v-show="show" id="area" v-model="content" ref="contentArea"></textarea>
@@ -26,7 +27,8 @@ export default {
     data(){
         return {
             content: this.preContent,
-            show: true
+            show: true,
+            blank: false
         }
     },
     methods: {
@@ -34,7 +36,9 @@ export default {
             this.show = !this.show
         },
         submit(){
-            if(!this.isEdit){
+            if(this.content === undefined || this.content === ''){
+                this.blank = true
+            } else if(!this.isEdit){
                 this.axios.post('/api/v1/post/' + this.postid + '/reply', {
                     content: this.content,
                     replyId: this.settedReplyId
@@ -126,5 +130,16 @@ textarea {
 
 .row a {
     margin: auto 0;
+}
+
+.error {
+    font-family: Verdana, Geneva, Tahoma, "Microsoft Yahei", sans-serif;
+    font-size: 16px;
+    color: red;
+    margin: auto 5px;
+    text-align: center;
+    animation: textAnimation 0.5s linear;
+    float: right;
+    padding: 0;
 }
 </style>

@@ -123,13 +123,4 @@ p {
     text-align: center;
     animation: textAnimation 0.5s linear;
 }
-
-@keyframes textAnimation {
-    25% {
-        transform: translateX(-10px);
-    }
-    75% {
-        transform: translateX(10px);
-    }
-}
 </style>

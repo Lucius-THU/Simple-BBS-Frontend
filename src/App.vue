@@ -183,4 +183,13 @@ footer > a {
 .a:hover {
     background-color: #ddd;
 }
+
+@keyframes textAnimation {
+    25% {
+        transform: translateX(-10px);
+    }
+    75% {
+        transform: translateX(10px);
+    }
+}
 </style>
