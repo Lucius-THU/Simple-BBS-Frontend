@@ -6,8 +6,8 @@
             <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
             <li>发帖时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.created) }}</li>
             <li v-if="seen(post)">更新时间：{{ (s => {const t = s.split(/[+T]/); return t[0] + " " + t[1] })(post.updated) }}</li>
-            <li v-if="check(post.userId) && index"><span class="a" @click="seenEdit = !seenEdit">{{ seenEdit ? '收起编辑': '编辑' }}</span></li>
-            <li v-if="index"><span class="a" @click.prevent="seenReply = !seenReply">{{ seenReply ? '收起回复': '回复' }}</span></li>
+            <li v-if="check(post.userId) && index !== 1"><span class="a" @click="seenEdit = !seenEdit">{{ seenEdit ? '收起编辑': '编辑' }}</span></li>
+            <li v-if="index !== 1"><span class="a" @click.prevent="seenReply = !seenReply">{{ seenReply ? '收起回复': '回复' }}</span></li>
         </ul>
         <transition name="fade"><Reply v-if="seenEdit" @reload="reload" :preContent="post.content" :postid="mainId" :settedReplyId="post.id" :isEdit="true"></Reply></transition>
         <transition name="fade"><Reply v-if="seenReply" @reload="reload" preContent="" :postid="mainId" :settedReplyId="post.id" :isEdit="false"></Reply></transition>
