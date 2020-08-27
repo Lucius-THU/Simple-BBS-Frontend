@@ -2,6 +2,7 @@
     <div class="circle tool">
         <router-link :to="'/user/' + user.id + '/page=1&size=10'">{{ lastname }}</router-link>
         <ul class="show-after-hover">
+            <router-link to="/about"><li>关 于</li></router-link>
             <li id="logout" @click="logout($event)">登 出</li>
             <router-link to="/create"><li>发 帖</li></router-link>
             <router-link to="/history/page=1&size=10"><li>浏览记录</li></router-link>
