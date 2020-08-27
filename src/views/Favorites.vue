@@ -77,14 +77,14 @@ export default {
         }
     },
     methods: {
-        Pageto(t){
+        Pageto(t){ // 跳转
             if(this.$route.path.indexOf('history') === -1){
                 this.$router.push('/favorites/page=' + (Number(this.page) + t) + '&size=' + this.size)
             } else {
                 this.$router.push('/history/page=' + (Number(this.page) + t) + '&size=' + this.size)
             }
         },
-        async refresh(s){
+        async refresh(s){ // 载入当前页的帖子
             if(s === undefined || s === ''){
                 this.total = 1
                 this.page = 1
@@ -122,22 +122,22 @@ export default {
                 }
             }
         },
-        seen(post){
+        seen(post){ // 只有当帖子有回复或被编辑过时，才显示更新时间
             return post.lastRepliedTime !== post.created
         },
-        latestTime(post){
+        latestTime(post){ // 回复时间与主帖编辑时间，谁更晚
             return post.updated < post.lastRepliedTime ? post.lastRepliedTime: post.updated
         },
-        latestTimeTag(post){
+        latestTimeTag(post){ // 回复时间与主帖编辑时间，谁更晚就显示谁
             return post.updated < post.lastRepliedTime ? '最新回帖时间': '更新时间'
         },
-        getPost(post, event){
+        getPost(post, event){ // 在新标签页打开对应的帖子
             if(event.target.tagName !== 'A'){
                 const newPage = this.$router.resolve('/post/' + post.id)
                 window.open(newPage.href, '_blank')
             }
         },
-        display(content){
+        display(content){ // 渲染文本
             return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         }
     }

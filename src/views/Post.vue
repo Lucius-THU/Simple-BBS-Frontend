@@ -73,7 +73,7 @@ export default {
         }
     },
     methods: {
-        Pageto(num){
+        Pageto(num){ // 跳转
             this.now += num
             sessionStorage.postid = this.now
             if(this.now > 1) this.prevSeen = true
@@ -86,7 +86,7 @@ export default {
                 this.displayInfo.push(this.selInfo[i])
             }
         },
-        async getContent(){
+        async getContent(){ // 获取帖子详情
             await this.axios.get('/api/v1/post/' + this.postid).then(response => {
                 this.info = response.data
                 this.favorite = this.isfavorite()
@@ -122,6 +122,8 @@ export default {
                     }
                     this.nextSeen = true
                 }
+
+                // 加入浏览记录
                 const history = localStorage.history;
                 if(history !== undefined && history.indexOf('[' + this.info.id + '];') !== -1){
                     localStorage.history = history.replace('[' + this.info.id + '];', '')
@@ -135,14 +137,14 @@ export default {
                 if(error.response.status === 401) this.$router.push('/login')
             })
         },
-        check(userid){
+        check(userid){ // 本人发的帖子才可以编辑
             return userid === this.$store.state.userid
         },
-        isfavorite(){
+        isfavorite(){ // 是否有收藏
             const posts = localStorage.posts;
             return posts !== undefined &&  posts.indexOf('[' + this.info.id + '];') !== -1
         },
-        favoriteChange(){
+        favoriteChange(){ // 收藏状态变更
             if(this.favorite){
                 localStorage.posts = localStorage.posts.replace('[' + this.info.id + '];', '')
             } else {

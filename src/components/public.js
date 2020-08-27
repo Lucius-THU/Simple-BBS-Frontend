@@ -19,7 +19,7 @@ const converter = new showdown.Converter({
     ]
 })
 
-function emotion(res){
+function emotion(res){ // 将表情标签替换为对应的 <img> 标签
     let word = res.replace(/\[|\]|;/g, '')
     const list = [
         '呵呵', '哈哈', '吐舌', '啊', '酷', '怒', '开心', '汗', '泪', '黑线',
@@ -36,7 +36,7 @@ function emotion(res){
     return '<img src="' + url + '">'
 }
 
-
+// 渲染文本专用
 export default function analyzeEmotion(content){
     const s = converter.makeHtml(content).replace(/\[[\u4E00-\u9FA5]{1,4}\];/g, emotion)
     return DOMPurify.sanitize(s)

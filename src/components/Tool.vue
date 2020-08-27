@@ -29,7 +29,7 @@ export default {
         })
     },
     methods: {
-        logout(event){
+        logout(event){ // 登出
             if(event.target.id === 'logout'){
                 this.axios.patch('/api/v1/logout').then(() => {
                     document.cookie = ""

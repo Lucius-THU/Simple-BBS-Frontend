@@ -6,6 +6,8 @@
                 <button type="submit" @click.prevent="submit">发布</button>
                 <button type="button" @click.prevent="preview">{{ show ? '预览' : '编辑'}}</button>
                 <Emotion @emo="add"></Emotion>
+
+                <!-- 帖子为空时报错 -->
                 <p v-if="blank" class="error">好像什么都没有写的样子！</p>
             </div>
             <div v-show="!show" v-html="display(content)"></div>
@@ -32,13 +34,13 @@ export default {
         }
     },
     methods: {
-        preview(){
+        preview(){ // 预览
             this.show = !this.show
         },
-        submit(){
+        submit(){ // 提交回复
             if(this.content === undefined || this.content === ''){
                 this.blank = true
-            } else if(!this.isEdit){
+            } else if(!this.isEdit){ // 编辑
                 this.axios.post('/api/v1/post/' + this.postid + '/reply', {
                     content: this.content,
                     replyId: this.settedReplyId
@@ -47,7 +49,7 @@ export default {
                 }).catch(error => {
                     if(error.response.status === 401) this.$router.push('/login')
                 })
-            } else {
+            } else { // 新回复
                 this.axios.put('/api/v1/post/' + this.postid + '/reply/' + this.settedReplyId, {
                     content: this.content
                 }).then(() => {
@@ -57,10 +59,10 @@ export default {
                 })
             }
         },
-        display(content){
+        display(content){ // 渲染文本
             return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         },
-        add(item){
+        add(item){ // 将表情标签插入文本框
             if(!this.show) return;
             const s = '[' + item + '];'
             const myField = this.$refs.contentArea;

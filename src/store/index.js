@@ -7,7 +7,7 @@ export default new Vuex.Store({
     state: {
         userid: 0,
         nickname: "",
-        total: 1,
+        total: 1, // 帖子列表的总页数
     },
     mutations: {
         setUserId(state, userid){

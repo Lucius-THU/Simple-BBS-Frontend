@@ -13,7 +13,7 @@ export default {
         total: Number
     },
     methods: {
-        to(){
+        to(){ // 跳转功能
             let value = this.$refs.input.value;
             if(value > this.total) value = this.total
             if(value < 1) value = 1

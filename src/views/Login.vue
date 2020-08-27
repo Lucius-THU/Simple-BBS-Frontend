@@ -26,7 +26,7 @@ export default {
         document.title = '登录 - 清软论坛'
     },
     methods: {
-        login(){
+        login(){ // 登录
             if(this.username === "" || this.password === ""){
                 this.wrong = false
                 this.seen = true

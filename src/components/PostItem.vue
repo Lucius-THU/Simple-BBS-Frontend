@@ -1,6 +1,8 @@
 <template>
     <li>
         <div class="content" v-html="display(post.content)"  @click="showImg"></div>
+        
+        <!-- 帖子的详细信息 -->
         <ul class="info">
             <li>{{ index }}楼</li>
             <li>作者：<router-link :to="'/user/' + post.userId + '/page=1&size=10'">{{ post.nickname }}</router-link></li>
@@ -11,6 +13,8 @@
         </ul>
         <transition name="fade"><Reply v-if="seenEdit" @reload="reload" :preContent="post.content" :postid="mainId" :settedReplyId="post.id" :isEdit="true"></Reply></transition>
         <transition name="fade"><Reply v-if="seenReply" @reload="reload" preContent="" :postid="mainId" :settedReplyId="post.id" :isEdit="false"></Reply></transition>
+        
+        <!-- 楼中楼 -->
         <div v-if="checkReply(displayInfo)" class="sub-reply">
             <ul class="sub-ul">
                 <li v-for="(post, index) in displayInfo" :key="index" class="reply-style">
@@ -73,25 +77,25 @@ export default {
         }
     },
     methods: {
-        display(content){
+        display(content){ // 渲染帖子内容
             return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         },
-        seen(post){
+        seen(post){ // 帖子更新过才显示更新时间
             return post.updated !== post.created
         },
-        check(userid){
+        check(userid){ // 本人的帖子才允许编辑
             return userid === this.$store.state.userid
         },
-        checkReply(postReply){
+        checkReply(postReply){ // 存在楼中楼才渲染
             return postReply !== undefined && postReply.length > 0
         },
-        edit(index){
+        edit(index){ // 设置“编辑回帖”状态
             this.$set(this.seenEdits, index, !this.seenEdits[index])
         },
-        replyit(index){
+        replyit(index){ // 设置“回复回帖”状态
             this.$set(this.seenReplys, index, !this.seenReplys[index])
         },
-        find(replyId){
+        find(replyId){ // 如果是回复楼中楼，还需要注明回复的是几楼
             for(let i = 0, len = this.post.reply.length; i < len; i++){
                 if(this.post.reply[i].id === replyId){
                     return '&gt; 回复 ' + this.post.reply[i].nickname + ' 在 ' + (i + 1) + ' 楼的帖子\n\n'
@@ -99,7 +103,7 @@ export default {
             }
             return ""
         },
-        more(){
+        more(){ // 楼中楼，点击加载更多
             this.startIndex += this.step
             if(this.cnt <= this.startIndex + this.step){
                 for(let i = this.startIndex; i < this.cnt; i++){
@@ -111,7 +115,7 @@ export default {
                 }
             }
         },
-        showImg(e){
+        showImg(e){ // 对长图添加点击放大，再点击复原的功能
             if(e){
                 if(e.target.tagName === 'IMG'){
                     if(e.target.height !== e.target.naturalHeight || e.target.className === 'big'){

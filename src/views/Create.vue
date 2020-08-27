@@ -43,11 +43,11 @@ export default {
         }
     },
     methods: {
-        preview(){
+        preview(){ // 预览
             this.show = !this.show
         },
-        submit(){
-            if(this.$route.path === '/create'){
+        submit(){ // 提交帖子
+            if(this.$route.path === '/create'){ // 新帖子
                 this.axios.post('/api/v1/post', {
                     title: this.title,
                     content: this.content
@@ -56,7 +56,7 @@ export default {
                 }).catch(error => {
                     if(error.response.status === 401) this.$router.push('/login')
                 })
-            } else {
+            } else { // 编辑
                 this.axios.put('/api/v1/post/' + this.$route.params.postid, {
                     title: this.title,
                     content: this.content
@@ -67,10 +67,10 @@ export default {
                 })
             }
         },
-        display(content){
+        display(content){ // 渲染文本
             return '<div class="setSize">' + analyzeEmotion(content) + '</div>'
         },
-        add(item){
+        add(item){ // 将表情标签插入文本框
             if(!this.show) return;
             const s = '[' + item + '];'
             const myField = this.$refs.contentArea;
