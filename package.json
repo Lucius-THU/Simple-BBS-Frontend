@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "dompurify": "^2.0.12",
+    "dompurify": "^2.0.17",
     "highlight.js": "^10.1.2",
     "showdown": "^1.9.1",
     "showdown-highlight": "^2.1.5",
